@@ -14,7 +14,7 @@ const apiKey = process.env.WEATHER_API_KEY;
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-// Parse incoming form data (urlencoded format)
+// Parse incoming form data
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set EJS as view engine 
