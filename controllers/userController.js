@@ -5,12 +5,21 @@ const sendMail = require('../mailer');
 
 // Signup
 exports.signup = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   try {
+    const existingUser = await User.findOne({email})
+    if (existingUser){
+        return res.status(400).json({message:"User recipe account already exists... Login instead"})
+    }
+    const existingUser2 = await User.findOne({name})
+    if (existingUser2){
+        return res.status(400).json({message:"Username used alraedy... Choose another"})
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+    const user = new User({ name, email, password: hashedPassword });
     await user.save();
     res.status(201).json({ message: 'User created successfully' });
+    await sendMail(user.name, user.email, "Account Creation", `Welocme ${user.name}. Your Grotivate Account Was Created`)
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -43,7 +52,7 @@ exports.resetPassword = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const resetLink = `http://yourapp.com/reset-password?token=${token}`; // update this link
 
-    sendMail(user.email, 'Password Reset', `Click the link to reset your password: ${resetLink}`);
+    sendMail(user.name, user.email, 'Password Reset', `Click the link to reset your password: ${resetLink}`);
 
     res.json({ message: 'Password reset email sent' });
   } catch (error) {
