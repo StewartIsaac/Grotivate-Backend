@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const weatherRoutes = require('./routes/weatherRoutes');
+const cropRoutes = require('./routes/cropRoutes');
+const pestRoutes = require('./routes/pestRoutes');
+const livestockRoutes = require('./routes/livestockRoutes');
 
 dotenv.config();
 
@@ -18,6 +21,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/users', userRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api', weatherRoutes);
+app.use('/api/crops', cropRoutes);
+app.use('/api/pests', pestRoutes);
+app.use('/api/livestock', livestockRoutes);
 
 // Connect to MongoDB
 connectDB();
