@@ -1,14 +1,14 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const sendMail = require('../mailer');
+const sendMail = require('../mailer.js');
 
 // Signup
 exports.signup = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+    const user = new User({ email, password: hashedPassword, name });
     await user.save();
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
@@ -46,6 +46,17 @@ exports.resetPassword = async (req, res) => {
     sendMail(user.email, 'Password Reset', `Click the link to reset your password: ${resetLink}`);
 
     res.json({ message: 'Password reset email sent' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Subscribe
+exports.subscribe = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(userId, { isSubscribed: true }, { new: true });
+    res.json({ message: 'Subscription successful', user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
