@@ -12,14 +12,6 @@ const path = require('path'); // this is for serving static files  - remove this
 
 dotenv.config();
 
-// Serve static files - remove this after cybersecurity testing
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve the index.html file - remove this after cybersecurity testing
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
 const app = express();
 
 // Middleware
@@ -43,6 +35,15 @@ app.use('*', (req,res)=>{
 app.use('/', (req,res)=>{
   res.status(200).json("Welcome to Gravitate!")
 })
+
+// Serve static files - remove this after cybersecurity testing
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve the index.html file - remove this after cybersecurity testing
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // Connect to MongoDB
 connectDB();
 
