@@ -9,7 +9,7 @@ exports.signup = async (req, res) => {
   try {
     const existingUser = await User.findOne({email})
     if (existingUser){
-        return res.status(400).json({message:"User recipe account already exists... Login instead"})
+        return res.status(400).json({message:"User account already exists... Login instead"})
     }
     const existingUser2 = await User.findOne({name})
     if (existingUser2){
