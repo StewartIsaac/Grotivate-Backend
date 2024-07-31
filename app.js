@@ -8,8 +8,17 @@ const weatherRoutes = require('./routes/weatherRoutes');
 const cropRoutes = require('./routes/cropRoutes');
 const pestRoutes = require('./routes/pestRoutes');
 const livestockRoutes = require('./routes/livestockRoutes');
+const path = require('path'); // this is for serving static files  - remove this after cybersecurity testing
 
 dotenv.config();
+
+// Serve static files - remove this after cybersecurity testing
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve the index.html file - remove this after cybersecurity testing
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 const app = express();
 
