@@ -8,7 +8,6 @@ const weatherRoutes = require('./routes/weatherRoutes');
 const cropRoutes = require('./routes/cropRoutes');
 const pestRoutes = require('./routes/pestRoutes');
 const livestockRoutes = require('./routes/livestockRoutes');
-const path = require('path'); // this is for serving static files  - remove this after cybersecurity testing
 
 dotenv.config();
 
@@ -17,6 +16,9 @@ const app = express();
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Set EJS as templating engine 
+app.set('view engine', 'ejs');
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -33,15 +35,11 @@ app.use('*', (req,res)=>{
 
 //Home Routes
 app.use('/', (req,res)=>{
-  res.status(200).json("Welcome to Gravitate!")
+  res.status(200).json("Welcome to Grovitate!")
 })
 
-// Serve static files - remove this after cybersecurity testing
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve the index.html file - remove this after cybersecurity testing
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+app.get('/', (req, res) => { 
+  res.render('home');
 });
 
 // Connect to MongoDB

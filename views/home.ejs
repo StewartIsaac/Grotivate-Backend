@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <style type="text/css" media="screen">
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: Arial, Helvetica, sans-serif;
+
+      }
+
+      nav {
+          margin-top: 20px; 
+          display: flex; 
+          flex-direction: row; 
+          align-items: center;
+          width: 100%;
+      }
+
+      div {
+          display: flex;
+          flex: auto;
+          width: 100%;
+      }
+
+      ul {
+          display: flex; 
+          flex-direction: row; 
+          justify-content: space-between; 
+          list-style: none; 
+          font-size: 20px;
+          gap: 30px;
+          font-weight: 700;
+          color: green;
+      }
+
+      .logo {
+          height: 100px; 
+          margin-left: 30px;
+      }
+
+      .navlink:first-child {
+          margin-left: 100px;
+      }
+
+      li:hover {
+          color: black;
+          border-bottom: 4px solid black;
+          cursor: pointer;
+      }
+
+      .heroDiv {
+          display: flex;
+          margin-top: 50px;
+          justify-content: center;
+      }
+
+      .hero {
+          height: 250px;
+      }
+
+      h1 {
+          text-align: center;
+          margin-top: 30px;
+      }
+
+      p {
+          text-align: center;
+          font-style: italic;
+          font-size: 20px;
+      }
+
+      span {
+          color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <nav>
+          <img src="./photo_2024-07-31_21-23-31.jpg" alt="" class="logo">
+          <ul>
+              <li class="navlink">Home</li>
+              <li class="navlink">About us</li>
+              <li class="navlink">Contact</li>
+          </ul>
+      </nav>
+    </div>
+    <div class="heroDiv">
+        <img src="./cartoon farmer planting_2824324.png" alt="" class="hero">
+    </div>
+
+    <h1>Welcome to <span>Grotivate App</span></h1>
+    <p>Your #1 Farm Management App</p>
+  </body>
+</html>
