@@ -1,11 +1,11 @@
 const nodemailer = require('nodemailer');
-const sendMail = async (name, userEmail, emailSubject, emailBody) => {
-    try{
+const sendMail = async ( name, userEmail, emailSubject, emailBody) => {
+    
     const mailerTransport = nodemailer.createTransport({
         service:"gmail",
         auth: {
-            user:`${process.env.EMAIL}`,
-            pass:`${process.env.EMAIL_PASSWORD}`
+            user:`${process.env.EMAIL_USER}`,
+            pass:`${process.env.EMAIL_PASS}`
         }
     })
     let mailDetails = {
@@ -22,9 +22,7 @@ const sendMail = async (name, userEmail, emailSubject, emailBody) => {
     }
     const result = await mailerTransport.sendMail(mailDetails);
 }
-catch(error){
-    return res.status(400).json({message:error.message})
-}
-}
+
+
 
 module.exports = sendMail
