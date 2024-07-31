@@ -1,10 +1,10 @@
 const express = require('express');
-const { signup, login, resetPassword, subscribe } = require('../controllers/userController');
+const { signup, login, resetPassword } = require('../controllers/userController');
+const {signupValidation, resetPasswordValidation} = require('../middleware/authValidation')
 const router = express.Router();
 
-router.post('/signup', signup);
+router.post('/signup', signupValidation, signup);
 router.post('/login', login);
-router.post('/reset-password', resetPassword);
-router.post('/subscribe', subscribe);
+router.post('/reset-password',  resetPassword);
 
 module.exports = router;

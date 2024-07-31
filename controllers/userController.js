@@ -5,14 +5,24 @@ const sendMail = require('../mailer.js');
 
 // Signup
 exports.signup = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { name, email, password } = req.body;
   try {
+    const existingUser = await User.findOne({email})
+    if (existingUser){
+        return res.status(400).json({message:"User account already exists... Login instead"})
+    }
+    const existingUser2 = await User.findOne({name})
+    if (existingUser2){
+        return res.status(400).json({message:"Username used alraedy... Choose another"})
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword, name });
+    const user = new User({ name, email, password: hashedPassword });
     await user.save();
-    res.status(201).json({ message: 'User created successfully' });
+    await sendMail(user.name, user.email, "Account Creation", `Welocme ${user.name}. Your Grotivate Account Was Created`)
+    return res.status(201).json({ message: 'User created successfully' });
+    
   } catch (error) {
-    res.status(500).json({ error: error.message });
+   return res.status(500).json({ error: error.message });
   }
 };
 
@@ -27,9 +37,9 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+   return res.json({ token });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+   return res.status(500).json({ error: error.message });
   }
 };
 
@@ -43,11 +53,11 @@ exports.resetPassword = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const resetLink = `http://yourapp.com/reset-password?token=${token}`; // update this link
 
-    sendMail(user.email, 'Password Reset', `Click the link to reset your password: ${resetLink}`);
+    sendMail(user.name, user.email, 'Password Reset', `Click the link to reset your password: ${resetLink}`);
 
-    res.json({ message: 'Password reset email sent' });
+  return  res.json({ message: 'Password reset email sent' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+   return res.status(500).json({ error: error.message });
   }
 };
 
@@ -58,6 +68,6 @@ exports.subscribe = async (req, res) => {
     const user = await User.findByIdAndUpdate(userId, { isSubscribed: true }, { new: true });
     res.json({ message: 'Subscription successful', user });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };

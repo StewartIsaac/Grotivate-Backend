@@ -25,6 +25,15 @@ app.use('/api/crops', cropRoutes);
 app.use('/api/pests', pestRoutes);
 app.use('/api/livestock', livestockRoutes);
 
+//Not Found Routes
+app.use('*', (req,res)=>{
+  res.status(400).json("Request not Found")
+})
+
+//Home Routes
+app.use('/', (req,res)=>{
+  res.status(200).json("Welcome to Gravitate!")
+})
 // Connect to MongoDB
 connectDB();
 
