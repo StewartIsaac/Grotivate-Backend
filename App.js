@@ -1,20 +1,23 @@
+import { useNavigation, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { RecoilRoot } from 'recoil';
 
 export default function App() {
+  let router = useRouter();
+  const navigation = useNavigation();
+  useEffect(()=> {
+    router.replace('/index')
+  },[navigation])
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+   <RecoilRoot>
+     <View className=' flex-1 items-center justify-center ' >
+      <Text>Grotivate</Text>
       <StatusBar style="auto" />
     </View>
+   </RecoilRoot>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
