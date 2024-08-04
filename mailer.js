@@ -24,9 +24,9 @@ const sendMail = async ( name, userEmail, emailSubject, emailBody) => {
 
         await mailerTransport.sendMail(mailDetails);
     }
-    catch {
+    catch(error) {
         console.error('Error sending email:', error);
-        throw new Error('Email could not be sent'); 
+        throw new Error('Email could not be sent');
     }
 };
 
