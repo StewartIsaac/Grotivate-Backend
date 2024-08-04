@@ -10,7 +10,7 @@ const getCoordinates = async (city) => {
         appid: process.env.WEATHER_API_KEY,
       },
     });
-    if (response.length === 0) {
+    if (response.data.length === 0) {
       throw new Error('No coordinates found for the specified city');
     }
     const data = response.data[0];
@@ -30,7 +30,7 @@ exports.getWeather = async (req, res) => {
         lat,
         lon,
         exclude: 'minutely',
- appid: process.env.WEATHER_API_KEY,
+        appid: process.env.WEATHER_API_KEY,
         units: 'metric', // or 'imperial' for Fahrenheit
       },
     });
