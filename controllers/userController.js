@@ -10,7 +10,7 @@ const generateOTP = () => {
 
 // Signup
 exports.signup = async (req, res) => {
-  const { name, password } = req.body;
+  const { email, name, password } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
