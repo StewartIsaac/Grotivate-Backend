@@ -10,6 +10,7 @@ const getCoordinates = async (city) => {
         appid: process.env.WEATHER_API_KEY,
       },
     });
+    console.log('Geo API Response:', response.data); // Log the response data
     if (response.data.length === 0) {
       throw new Error('No coordinates found for the specified city');
     }
@@ -23,9 +24,13 @@ const getCoordinates = async (city) => {
 
 exports.getWeather = async (req, res) => {
   const { city } = req.query;
+  if (!city) {
+    return res.status(400).json({ error: 'City is required' });
+  }
   try {
     const { lat, lon } = await getCoordinates(city);
-    const response = await axios.get(`https://api.openweathermap.org/data/3.0/onecall`, {
+    console.log('Coordinates:', { lat, lon }); // Log the coordinates
+    const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=`, {
       params: {
         lat,
         lon,
@@ -34,9 +39,12 @@ exports.getWeather = async (req, res) => {
         units: 'metric', // or 'imperial' for Fahrenheit
       },
     });
+    console.log('Weather Data:', response.data); // Log the weather data
     res.json(response.data);
   } catch (error) {
     console.error('Error fetching weather data:', error.message);
     res.status(500).json({ error: error.message });
   }
 };
+
+console.log('API Key:', process.env.WEATHER_API_KEY);
