@@ -29,7 +29,6 @@ exports.getWeather = async (req, res) => {
   }
   try {
     const { lat, lon } = await getCoordinates(city);
-    console.log('Coordinates:', { lat, lon }); // Log the coordinates
     const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=`, {
       params: {
         lat,
@@ -39,12 +38,9 @@ exports.getWeather = async (req, res) => {
         units: 'metric', // or 'imperial' for Fahrenheit
       },
     });
-    console.log('Weather Data:', response.data); // Log the weather data
     res.json(response.data);
   } catch (error) {
     console.error('Error fetching weather data:', error.message);
     res.status(500).json({ error: error.message });
   }
 };
-
-console.log('API Key:', process.env.WEATHER_API_KEY);
