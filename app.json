@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "entryPoint": ".node_modules/expo/AppEntry.js",
+    "scheme": "rn-router2",
     "splash": {
       "image": "./assets/mainSplashScreen.png",
       "resizeMode": "contain",
@@ -14,33 +14,27 @@
     },
     "ios": {
       "supportsTablet": true
+     
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.chilemati.Grotivate"
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
-       "output": "server"
+      "output": "server"
     },
-    "plugins": [
-     [
-      "expo-router",
-      {
+    "extra": {
+      "router": {
         "origin": "https://grotivate.onrender.com/"
+      },
+      "eas": {
+        "projectId": "ae1db0de-756c-4f37-a3b5-7161aa15df85"
       }
-     ],
-     [
-      "expo-font",
-      {
-        "fonts": ["./assets/fonts/Inter.ttf","./assets/fonts/Sevillana.ttf"]
-      }
-        
-     ]
-    ],
-    "scheme": "Grotivate"
+    }
   }
 }

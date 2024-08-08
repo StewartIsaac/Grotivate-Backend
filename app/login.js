@@ -28,12 +28,9 @@ const Schema = Yup.object().shape({
   password: Yup.string()
     .min(8, "Must Contain 8 Characters")
     .required()
-    .matches(/^(?=.*[a-z])/, " Must Contain One Lowercase Character")
-    .matches(/^(?=.*[A-Z])/, "  Must Contain One Uppercase Character")
-    .matches(/^(?=.*[0-9])/, "  Must Contain One Number Character")
     .matches(
-      /^(?=.*[!@#\$%\^&\*])/,
-      "  Must Contain  One Special Case Character"
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
     ),
 });
 
@@ -55,31 +52,7 @@ export default function Page() {
     setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    if(form) {
-      axios
-      .post("https://grotivate.onrender.com/api/users/login", {
-        email: form.email,
-        password: form.password,
-      })
-      .then((resp) => {
-        console.log(resp.data);
-        if(resp.data.token) {
-          setStatus(resp.data.message)
-          setUser({isLoggedIn:true, data:resp.data});
-          setTimeout(() => {
-            router.replace("/welcome");
-          }, 1000);
 
-        }
-        // setForm({});
-      })
-      .catch((err) => {
-        setStatus(err.message)
-        console.log(err);
-      });
-    }
-  }, [form]);
 
   
 
@@ -93,8 +66,38 @@ export default function Page() {
           <Formik
             initialValues={{ email: "", password: "" }}
             onSubmit={async (values) => {
-              // console.log(values)
-              setForm(values);
+              let url = 'https://grotivate.onrender.com/api/users/login';
+              try {
+                let resp= await   fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    password: values.password,
+                    email: values.email
+                  })
+                }).then(a=> {
+                  return a.json();
+                }).then(b=> {
+                  // console.log(b);
+                  setStatus(b.message)
+                    if(b.token) {
+                      setUser({isLoggedIn:true, data:{email: values.email,token: b.token}});
+                      setTimeout(() => {
+                        router.replace("/welcome");
+                      }, 1000);
+                    }
+                  }).catch(err=> {
+                    setStatus(err.message)
+                    // console.log(err);
+                  })
+                
+              } catch (error) {
+                // console.log(error);
+                setStatus(error.message);
+              }
             }}
             validationSchema={Schema}
           >

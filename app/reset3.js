@@ -2,7 +2,7 @@
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Image } from 'react-native';
 import { View } from 'react-native';
-import success from '../assets/success icon component.png';
+import success from '../assets/ph_check-fill.png';
 
 import { Text } from 'react-native';
 import { useEffect } from 'react';

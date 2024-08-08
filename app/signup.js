@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, View, ActivityIndicator } from "react-native";
 import { SafeAreaView, Text } from "react-native";
 import groove from "../assets/grooooo 7.png";
-import { Formik } from "formik";
+import { Formik, useFormikContext,  } from "formik";
 import * as Yup from "yup";
 
 import openeye from "../assets/openeye.png";
@@ -18,24 +18,17 @@ const Schema = Yup.object().shape({
   password1: Yup.string()
     .min(8, "Must Contain 8 Characters")
     .required()
-    .matches(/^(?=.*[a-z])/, " Must Contain One Lowercase Character")
-    .matches(/^(?=.*[A-Z])/, "  Must Contain One Uppercase Character")
-    .matches(/^(?=.*[0-9])/, "  Must Contain One Number Character")
     .matches(
-      /^(?=.*[!@#\$%\^&\*])/,
-      "  Must Contain  One Special Case Character"
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
     ),
   password2: Yup.string()
     .min(8, "Must Contain 8 Characters")
     .required()
-    .matches(/^(?=.*[a-z])/, " Must Contain One Lowercase Character")
-    .matches(/^(?=.*[A-Z])/, "  Must Contain One Uppercase Character")
-    .matches(/^(?=.*[0-9])/, "  Must Contain One Number Character")
     .matches(
-      /^(?=.*[!@#\$%\^&\*])/,
-      "  Must Contain  One Special Case Character"
-    )
-    .oneOf([Yup.ref("password1"), null], "Passwords must match"),
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+    ),
 });
 
 export default function Page() {
@@ -45,36 +38,14 @@ export default function Page() {
   let [showPassword2, toggleShowPassword2] = useState(false);
   let [status,setStatus] = useState('');
   let [user,setUser] = useRecoilState(userInfo);
-  let [form, setForm] = useState(false);
+  let [passwordMatch, setPasswordMatch] = useState({state: false, msg: ''});
+  // const { submitForm, values} = useFormikContext();
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-  useEffect(() => {
-    if(form) {
-      axios
-      .post("https://grotivate.onrender.com/api/users/signup", {
-        email: form.email,
-        password: form.password1,
-        name: form.fullname
-      })
-      .then((resp) => {
-        console.log(resp);
-        setStatus(resp.data.message)
-        setUser({isLoggedIn:true, data:resp.data});
-        setTimeout(() => {
-          router.replace("/email");
-        }, 1000);
-
-      })
-      .catch((err) => {
-        setStatus(err.message)
-        console.log(err,'error');
-        
-      });
-    }
-  }, [form]);
+  
 
   return (
     <SafeAreaView className="bg-mgray2">
@@ -98,7 +69,38 @@ export default function Page() {
               fullname: "",
             }}
             onSubmit={async (values) => {
-             setForm(values);
+              let url = 'https://grotivate.onrender.com/api/users/signup';
+              try {
+                let resp= await   fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    password: values.password1,
+                    name: values.fullname,
+                    email: values.email
+                  })
+                }).then(a=> {
+                  return a.json();
+                }).then(b=> {
+                  // console.log(b);
+                  setStatus(b.message);
+                  if(String(b.message).includes('successfully')) {
+                    setUser({isLoggedIn: false,data: {email: values.email, fullname: values.name}})
+                    router.replace('/email')
+                  }
+                }).catch(err=> {
+
+                  // console.log(err)
+                  setStatus(err.message,'err');
+                })
+                
+              } catch (error) {
+                setStatus(error.message);
+                // console.log(error,'error')
+              }
             }}
             validationSchema={Schema}
           >
@@ -109,7 +111,7 @@ export default function Page() {
               values,
               errors,
               touched,
-              isSubmitting
+              isSubmitting,
             }) => (
               <>
                 {/* fullname */}
@@ -200,6 +202,9 @@ export default function Page() {
                     {errors.password2}
                   </Text>
                 )}
+                <Text className="text-red-600 text-xs">
+                    {passwordMatch.msg}
+                  </Text>
 
                 {/* login button */}
                 <View className="mt-[65px] ">
@@ -217,7 +222,10 @@ export default function Page() {
 
                   {
                     !isSubmitting && <Pressable
-                    onPress={() => handleSubmit()}
+                    onPress={() => {
+                      values.password1 === values.password2? setPasswordMatch({state: true, msg: ''}): setPasswordMatch({state: false, msg: 'password must match'});
+                      passwordMatch.state && handleSubmit();
+                    }}
                     type="submit"
                     className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen py-[10px] px-[13px] pr-[18px] "
                   >

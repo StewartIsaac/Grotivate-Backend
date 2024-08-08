@@ -1,11 +1,13 @@
 import { useNavigation, useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Pressable, Text, TextInput, View, ActivityIndicator } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { SafeAreaView } from "react-native";
 import { ScrollView } from "react-native";
+import { useRecoilState } from "recoil";
+import { userInfo } from "../atoms/user";
 
 const Schema = Yup.object().shape({
   digit1: Yup.string()
@@ -28,15 +30,29 @@ const Schema = Yup.object().shape({
     .matches(/^[0-9]+$/, "Must be only digits")
     .min(1, "Must be exactly 1 digits")
     .max(1, "Must be exactly 1 digits"),
+  digit5: Yup.string()
+    .required()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .min(1, "Must be exactly 1 digits")
+    .max(1, "Must be exactly 1 digits"),
+  digit6: Yup.string()
+    .required()
+    .matches(/^[0-9]+$/, "Must be only digits")
+    .min(1, "Must be exactly 1 digits")
+    .max(1, "Must be exactly 1 digits"),
 });
 
 export default function Page() {
   const navigation = useNavigation();
   const router = useRouter();
+  let  [user,setUser] = useRecoilState(userInfo);
+  let [status,setStatus] = useState('');
 
   const ref_input2 = useRef();
   const ref_input3 = useRef();
   const ref_input4 = useRef();
+  const ref_input5 = useRef();
+  const ref_input6 = useRef();
   
 
   useEffect(() => {
@@ -62,11 +78,42 @@ export default function Page() {
               digit2: "",
               digit3: "",
               digit4: "",
+              digit5: "",
+              digit6: "",
               
             }}
             onSubmit={async (values) => {
-              console.log(values);
-              router.replace("/email2");
+              let url = 'https://grotivate.onrender.com/api/users/verify-otp';
+              try {
+                let resp= await   fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    otp: `${values.digit1}${values.digit2}${values.digit3}${values.digit4}${values.digit5}${values.digit6}` ,
+                    email: user.data.email
+                  })
+                }).then(a=> {
+                  return a.json();
+                }).then(b=> {
+                  // console.log(b);
+                  setStatus(b.message)
+                  if(String(b.message).includes('successfully')) {
+                    setUser({...user,isLoggedIn: true})
+                    router.replace('/email2')
+                  }
+                }).catch(err=> {
+
+                  // console.log(err)
+                  setStatus(err.message);
+                })
+                
+              } catch (error) {
+                setStatus(error.message);
+                // console.log(error)
+              }
             }}
             validationSchema={Schema}
           >
@@ -77,16 +124,17 @@ export default function Page() {
               values,
               errors,
               touched,
+              isSubmitting
             }) => (
               <>
                 {/* email */}
-                <View className=" mb-[25px] flex items-center justify-center flex-row gap-[25px]  ">
+                <View className=" mb-[25px] flex items-center justify-center flex-row gap-[5px]  ">
                     {/* box1 */}
                   <TextInput
                     onChangeText={handleChange("digit1")}
                     onBlur={handleBlur("digit1")}
                     value={values.digit1}
-                    className=" text-center w-[57px] rounded-[10px] h-[49px] bg-mgray border-transparent "
+                    className=" text-center w-[50px] rounded-[10px] h-[49px] bg-mgray border-transparent "
                     placeholderTextColor="#aaa"
                     keyboardType="numeric"
                     maxLength={1}
@@ -100,7 +148,7 @@ export default function Page() {
                     onChangeText={handleChange("digit2")}
                     onBlur={handleBlur("digit2")}
                     value={values.digit2}
-                    className="text-center w-[57px] rounded-[10px] h-[49px] bg-mgray border-transparent "
+                    className="text-center w-[50px] rounded-[10px] h-[49px] bg-mgray border-transparent "
                     placeholderTextColor="#aaa"
                     keyboardType="numeric"
                     maxLength={1}
@@ -111,7 +159,7 @@ export default function Page() {
                     onChangeText={handleChange("digit3")}
                     onBlur={handleBlur("digit3")}
                     value={values.digit3}
-                    className="text-center w-[57px] rounded-[10px] h-[49px] bg-mgray border-transparent "
+                    className="text-center w-[50px] rounded-[10px] h-[49px] bg-mgray border-transparent "
                     placeholderTextColor="#aaa"
                     keyboardType="numeric"
                     maxLength={1}
@@ -123,11 +171,37 @@ export default function Page() {
                     onChangeText={handleChange("digit4")}
                     onBlur={handleBlur("digit4")}
                     value={values.digit4}
-                    className="text-center w-[57px] rounded-[10px] h-[49px] bg-mgray border-transparent "
+                    className="text-center w-[50px] rounded-[10px] h-[49px] bg-mgray border-transparent "
                     placeholderTextColor="#aaa"
                     keyboardType="numeric"
                     maxLength={1}
                     ref={ref_input4}
+                    onChange={() => ref_input5.current.focus()}
+                    
+                  />
+                  {/* box5 */}
+                  <TextInput
+                    onChangeText={handleChange("digit5")}
+                    onBlur={handleBlur("digit5")}
+                    value={values.digit5}
+                    className="text-center w-[50px] rounded-[10px] h-[49px] bg-mgray border-transparent "
+                    placeholderTextColor="#aaa"
+                    keyboardType="numeric"
+                    maxLength={1}
+                    ref={ref_input5}
+                    onChange={() => ref_input6.current.focus()}
+                    
+                  />
+                  {/* box6 */}
+                  <TextInput
+                    onChangeText={handleChange("digit6")}
+                    onBlur={handleBlur("digit6")}
+                    value={values.digit6}
+                    className="text-center w-[50px] rounded-[10px] h-[49px] bg-mgray border-transparent "
+                    placeholderTextColor="#aaa"
+                    keyboardType="numeric"
+                    maxLength={1}
+                    ref={ref_input6}
                     
                   />
                  
@@ -138,16 +212,32 @@ export default function Page() {
 
                 {/* login button */}
                 <View className="mt-[93px] ">
-                  <Pressable
-                    onPress={() => handleSubmit()}
-                    type="submit"
+                {
+                    isSubmitting && <Pressable
+                    disabled={true}
                     className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen py-[10px] px-[13px] pr-[18px] "
                   >
                     <Text className="text-white text-[18px] font-Inter700 font-semibold ">
-                    Continue
+                     <ActivityIndicator color={'primary'} size={'large'} />
                     </Text>
                   </Pressable>
+                
+                  }
+                 {
+                  !isSubmitting && 
+                  <Pressable
+                  onPress={() => handleSubmit()}
+                  type="submit"
+                  className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen py-[10px] px-[13px] pr-[18px] "
+                >
+                  <Text className="text-white text-[18px] font-Inter700 font-semibold ">
+                  Continue
+                  </Text>
+                </Pressable>
+                 }
                 </View>
+                 {/* error status */}
+                 <Text className='text-red-600 text-center mt-1' > {status} </Text>
               </>
             )}
           </Formik>

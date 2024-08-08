@@ -1,32 +1,32 @@
 import {  useNavigation, useRouter } from "expo-router";
 import { useEffect, useState, } from "react";
-import {  Pressable, Text, TextInput, View } from "react-native";
+import {  Pressable, Text, TextInput, View,ActivityIndicator } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { SafeAreaView } from "react-native";
 import { ScrollView } from "react-native";
 import axios, { AxiosHeaders } from "axios";
+import { useRecoilState } from "recoil";
+import { userInfo } from "../atoms/user";
 
 const Schema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   
 });
 
-const instance = axios.create({
-    baseURL: 'https://grotivate.onrender.com/api/users',
-    
-});
 
 export default function Page() {
   const navigation = useNavigation();
   const router = useRouter();
-  let [form,setForm] = useState(false);
+  let [status,setStatus] = useState('');
+  let  [user,setUser] = useRecoilState(userInfo);
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
-
+  
+  
  
   return (
     <SafeAreaView>
@@ -42,25 +42,35 @@ export default function Page() {
           onSubmit={async (values) =>{ 
             // console.log(values)
 
-            // setForm(values);
-
-            (async()=>{
-              try {
-                let result = await  axios(
-                  {
-                    url:'https://grotivate.onrender.com/api/users/reset-password',
-                    method: 'POST',
-                    timeout: 10000,
-                    body:{email: values.email}
-                  }
-                  
-                );
-                console.log(result)
-              } catch (error) {
-                console.log(error,'Error')
-              }
-                
-              })()
+          let url = 'https://grotivate.onrender.com/api/users/reset-password';
+            try {
+              let resp= await   fetch(url, {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  email: values.email
+                })
+              }).then(a=> {
+                return a.json();
+              }).then(b=> {
+                console.log(b);
+                setStatus(b.message)
+                if(String(b.message).includes('Please enter password')) {
+                  setUser({isLoggedIn:false, data: {email: values.email}})
+                  router.replace('/reset1');
+                }
+              }).catch(err=> {
+                console.log(err)
+                setStatus(err.message)
+              })
+              
+            } catch (error) {
+              console.log(error)
+              setStatus(error.message)
+            }
             
         }} 
           validationSchema={Schema}
@@ -72,6 +82,7 @@ export default function Page() {
             values,
             errors,
             touched,
+            isSubmitting
           }) => (
             <>
               {/* email */}
@@ -95,16 +106,33 @@ export default function Page() {
             
               {/* login button */}
               <View className="mt-[65px] ">
+              {
+                    isSubmitting && <Pressable
+                    disabled={true}
+                    className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen py-[10px] px-[13px] pr-[18px] "
+                  >
+                    <Text className="text-white text-[18px] font-Inter700 font-semibold ">
+                     <ActivityIndicator color={'primary'} size={'large'} />
+                    </Text>
+                  </Pressable>
+                
+                  }
+               {
+                !isSubmitting &&
+
                 <Pressable
-                  onPress={() => handleSubmit() }
-                  type="submit"
-                  className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen2 py-[10px] px-[13px] pr-[18px] "
-                >
-                  <Text className="text-white text-[18px] font-Inter700 font-semibold ">
-                   Next
-                  </Text>
-                </Pressable>
+                onPress={() => handleSubmit() }
+                type="submit"
+                className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen2 py-[10px] px-[13px] pr-[18px] "
+              >
+                <Text className="text-white text-[18px] font-Inter700 font-semibold ">
+                 Next
+                </Text>
+              </Pressable>
+               }
               </View>
+              {/* error status */}
+              <Text className='text-red-600 text-center mt-1' > {status} </Text>
               
               
              

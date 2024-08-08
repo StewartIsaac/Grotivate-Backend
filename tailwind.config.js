@@ -18,9 +18,12 @@ module.exports = {
       colors: {
         mgreen: '#47904E',
         mgreen2: '#81C398',
+        mgreen3: '#319F43',
         mwhite: '#FEFEFE',
         mgray: '#D9D9D9',
         mgray2: '#F3F3F3',
+        mgray3: '#B7B7B7',
+        mgray4: '#909090',
       },
       fontSize: {
         14: '14px',

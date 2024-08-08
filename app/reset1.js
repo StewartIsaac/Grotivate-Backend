@@ -1,11 +1,13 @@
 import { useNavigation, useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Pressable, Text, TextInput, View,ActivityIndicator } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { SafeAreaView } from "react-native";
 import { ScrollView } from "react-native";
+import { useRecoilState } from "recoil";
+import { userInfo } from "../atoms/user";
 
 const Schema = Yup.object().shape({
   digit1: Yup.string()
@@ -43,6 +45,8 @@ const Schema = Yup.object().shape({
 export default function Page() {
   const navigation = useNavigation();
   const router = useRouter();
+  let [status,setStatus] = useState('');
+  let  [user,setUser] = useRecoilState(userInfo);
 
   const ref_input2 = useRef();
   const ref_input3 = useRef();
@@ -78,8 +82,36 @@ export default function Page() {
               digit6: "",
             }}
             onSubmit={async (values) => {
-              console.log(values);
-              router.replace("/reset2");
+              let url = 'https://grotivate.onrender.com/api/users/verify-otp';
+              try {
+                let resp= await   fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    email: user.data.email,
+                    otp:  `${values.digit1}${values.digit2}${values.digit3}${values.digit4}${values.digit5}${values.digit6}`
+                  })
+                }).then(a=> {
+                  return a.json();
+                }).then(b=> {
+                  console.log(b);
+                  setStatus(b.message)
+                  if(String(b.message).includes('successfully')) {
+                    setUser({...user,isLoggedIn: true})
+                    router.replace('/reset2');
+                  }
+                }).catch(err=> {
+                  console.log(err)
+                  setStatus(err.message)
+                })
+                
+              } catch (error) {
+                console.log(error)
+                setStatus(error.message)
+              }
             }}
             validationSchema={Schema}
           >
@@ -90,6 +122,7 @@ export default function Page() {
               values,
               errors,
               touched,
+              isSubmitting
             }) => (
               <>
                 {/* email */}
@@ -167,7 +200,21 @@ export default function Page() {
 
                 {/* login button */}
                 <View className="mt-[93px] ">
-                  <Pressable
+                {
+                    isSubmitting && <Pressable
+                    disabled={true}
+                    className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen py-[10px] px-[13px] pr-[18px] "
+                  >
+                    <Text className="text-white text-[18px] font-Inter700 font-semibold ">
+                     <ActivityIndicator color={'primary'} size={'large'} />
+                    </Text>
+                  </Pressable>
+                
+                  }
+                  {
+                    !isSubmitting &&
+
+                    <Pressable
                     onPress={() => handleSubmit()}
                     type="submit"
                     className="text-white min-w-[65px] flex items-center flex-row justify-center h-[55px]  rounded-[14.81px] bg-mgreen2 py-[10px] px-[13px] pr-[18px] "
@@ -176,8 +223,10 @@ export default function Page() {
                       Next
                     </Text>
                   </Pressable>
-                  <Text> {Object.values(errors)} </Text>
+                  }
                 </View>
+                 {/* error status */}
+                 <Text className='text-red-600 text-center mt-1' > {status} </Text>
               </>
             )}
           </Formik>
