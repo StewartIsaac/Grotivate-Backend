@@ -111,7 +111,7 @@ exports.requestPasswordResetOTP = async (req, res) => {
 
     await sendMail(
       user.name,
-      user,
+      user.email,
       "Password Reset OTP",
       `Your OTP for password reset is ${otp}`
     );
