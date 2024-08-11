@@ -1,4 +1,4 @@
-const paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY);
+const paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
 
 // Initialize Transaction
 exports.initializeTransaction = async (req, res) => {

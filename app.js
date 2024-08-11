@@ -8,6 +8,8 @@ const weatherRoutes = require("./routes/weatherRoutes");
 const cropRoutes = require("./routes/cropRoutes");
 const pestRoutes = require("./routes/pestRoutes");
 const livestockRoutes = require("./routes/livestockRoutes");
+const farmRoutes = require("./routes/farmRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 dotenv.config();
 
@@ -26,6 +28,8 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api", weatherRoutes);
 app.use("/api/crops", cropRoutes);
 app.use("/api/pests", pestRoutes);
+app.use("/api/about-your-farm", farmRoutes);
+app.use("/api/farm-products", productRoutes);
 app.use("/api/livestock", livestockRoutes);
 
 //Not Found Routes
