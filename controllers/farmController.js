@@ -18,7 +18,7 @@ exports.createFarm = async (req, res) => {
   }
 };
 
-exports.get = async (req, res) => {
+exports.getFarmData = async (req, res) => {
   try {
     const farm = await Farm.findOne({ user: req.user.id });
     if (!farm) {

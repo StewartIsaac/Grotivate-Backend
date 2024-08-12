@@ -12,6 +12,7 @@ exports.initializeTransaction = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+  res.send("Transaction initialized");
 };
 
 // Verify Transaction
@@ -23,4 +24,5 @@ exports.verifyTransaction = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+  res.send("Transaction verified");
 };

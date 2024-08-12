@@ -1,10 +1,9 @@
 const express = require("express");
-const { createFarm, getFarm } = require("../controllers/farmController");
-const authMiddleware = require("../middleware/authMiddleware");
+const { createFarm, getFarmData } = require("../controllers/farmController");
 
 const router = express.Router();
 
-router.post("/farm", authMiddleware, createFarm);
-router.get("/farm", authMiddleware, getFarm);
+router.post("/about-farm", createFarm);
+router.get("/retrieve-about-farm", getFarmData);
 
 module.exports = router;

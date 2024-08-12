@@ -3,11 +3,11 @@ const {
   initializeTransaction,
   verifyTransaction,
 } = require("../controllers/paymentController");
-const authMiddleware = require("../middleware/authMiddleware");
+const { verifyToken } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/initialize", authMiddleware, initializeTransaction);
-router.get("/verify", authMiddleware, verifyTransaction);
+router.post("/initialize", verifyToken, initializeTransaction);
+router.get("/verify", verifyToken, verifyTransaction);
 
 module.exports = router;
