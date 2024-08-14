@@ -26,6 +26,7 @@ const Schema = Yup.object().shape({
   address: Yup.string().required("Required"),
   city: Yup.string().required("Required"),
   state: Yup.string().required("Required"),
+  lg: Yup.string().required("Required"),
   // experience: part ===2 && Yup.string().required("Required"),
 });
 
@@ -60,6 +61,7 @@ const Schema = Yup.object().shape({
               city: "",
               address: "",
               state: "",
+              lg: "",
               // experience: "",
             }}
             onSubmit={async (values) => {
@@ -183,25 +185,26 @@ const Schema = Yup.object().shape({
                 {touched.country && errors.country && (
                   <Text className="text-red-600 text-xs">{errors.country}</Text>
                 )}
-                {/* address */}
-                <View className=" mb-[25px] mt-[11px]  ">
+               
+                 {/* state */}
+                 <View className=" mb-[25px] mt-[11px]  ">
                   <Text className="mb-[3px] font-Inter500 font-medium text-[12px] ">
-                    Address
+                    State
                   </Text>
 
                   <View className=" w-[90vw]  mx-auto h-auto border-[1px] border-mgray3 flex items-center justify-between flex-row py-[10px] pl-[10px] pr-[11px] ">
                     <TextInput
-                      onChangeText={handleChange("address")}
-                      onBlur={handleBlur("address")}
-                      value={values.address}
+                      onChangeText={handleChange("state")}
+                      onBlur={handleBlur("state")}
+                      value={values.state}
                       className=" w-full block border-transparent "
                       placeholder=""
                       placeholderTextColor="#aaa"
                     />
                   </View>
                 </View>
-                {touched.address && errors.address && (
-                  <Text className="text-red-600 text-xs">{errors.address}</Text>
+                {touched.state && errors.state && (
+                  <Text className="text-red-600 text-xs mb-[77px] ">{errors.state}</Text>
                 )}
                 {/* city */}
                 <View className=" mb-[25px] mt-[11px]  ">
@@ -223,26 +226,50 @@ const Schema = Yup.object().shape({
                 {touched.city && errors.city && (
                   <Text className="text-red-600 text-xs">{errors.city}</Text>
                 )}
-                {/* state */}
-                <View className=" mb-[25px] mt-[11px]  ">
+
+                 {/* local goverment */}
+                 <View className=" mb-[25px] mt-[11px]  ">
                   <Text className="mb-[3px] font-Inter500 font-medium text-[12px] ">
-                    State
+                    Local Government
                   </Text>
 
                   <View className=" w-[90vw]  mx-auto h-auto border-[1px] border-mgray3 flex items-center justify-between flex-row py-[10px] pl-[10px] pr-[11px] ">
                     <TextInput
-                      onChangeText={handleChange("state")}
-                      onBlur={handleBlur("state")}
-                      value={values.state}
+                      onChangeText={handleChange("lg")}
+                      onBlur={handleBlur("lg")}
+                      value={values.lg}
                       className=" w-full block border-transparent "
                       placeholder=""
                       placeholderTextColor="#aaa"
                     />
                   </View>
                 </View>
-                {touched.state && errors.state && (
-                  <Text className="text-red-600 text-xs mb-[77px] ">{errors.state}</Text>
+                {touched.lg && errors.lg && (
+                  <Text className="text-red-600 text-xs">{errors.lg}</Text>
                 )}
+
+                 {/* address */}
+                 <View className=" mb-[25px] mt-[11px]  ">
+                  <Text className="mb-[3px] font-Inter500 font-medium text-[12px] ">
+                    Address
+                  </Text>
+
+                  <View className=" w-[90vw]  mx-auto h-auto border-[1px] border-mgray3 flex items-center justify-between flex-row py-[10px] pl-[10px] pr-[11px] ">
+                    <TextInput
+                      onChangeText={handleChange("address")}
+                      onBlur={handleBlur("address")}
+                      value={values.address}
+                      className=" w-full block border-transparent h-[76px] "
+                      placeholder=""
+                      placeholderTextColor="#aaa"
+                      multiline
+                    />
+                  </View>
+                </View>
+                {touched.address && errors.address && (
+                  <Text className="text-red-600 text-xs">{errors.address}</Text>
+                )}
+               
                     </>
                    }
                    {/* {

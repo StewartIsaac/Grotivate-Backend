@@ -220,23 +220,23 @@ export default function Page() {
                   {" "}
                   {status}{" "}
                 </Text>
-                <Text className="font-Roboto400 text-[13px] text-center mt-[25px] ">
+                <Text className="font-Roboto400 w-[95vw] mx-auto text-[13px] text-center mt-[25px] ">
                   {" "}
                   Or login with{" "}
                 </Text>
                 {/* buttons */}
-                <View className=" mt-9 w-full items-center px-[8px]  flex text-center justify-between  flex-col">
+                <View className=" mt-9 w-[95vw] items-center px-[8px]  flex text-center justify-between  flex-col">
                   <Pressable
                     onPress={() => {}}
                     type="submit"
-                    className="text-white w-[313px] border-[0.59px]   rounded-[11.83px] bg-trasparent py-[15px] flex items-center justify-center flex-row mb-[24px] gap-[14.4px] "
+                    className="text-white w-full border-[0.59px]   rounded-[11.83px] bg-trasparent py-[15px] flex items-center justify-center flex-row mb-[24px] gap-[14.4px] "
                   >
                     <Image className="" source={google} alt="google" />
                     <Text className="text-black font-Roboto700 font-semibold ">
                       Google
                     </Text>
                   </Pressable>
-                  <Pressable className="text-white w-[313px]  rounded-[11.83px] bg-transparent py-[15px] border-[0.59px]   flex items-center justify-center flex-row gap-[14.4px]">
+                  <Pressable className="text-white w-full  rounded-[11.83px] bg-transparent py-[15px] border-[0.59px]   flex items-center justify-center flex-row gap-[14.4px]">
                     <Image className="" source={apple} alt="apple" />
                     <Text className="text-black font-Roboto700  font-semibold ">
                       Apple

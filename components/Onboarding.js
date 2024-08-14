@@ -57,12 +57,13 @@ const Onboarding = () => {
         {/* dots */}
         <View className="flex-1 flex-col mt-[26px] mb-[33px]  items-center justify-center ">
           <View className="  w-full">
-            <View className="h-fit w-full text-center flex-row flex items-center justify-center gap-[6px] ">
+            <View className="h-fit w-full text-center flex-row flex items-center justify-center  ">
               {screen.map((each, i) => (
                 <Text
                   style={{ backgroundColor: each.class }}
-                  className="h-[11px] w-[11px] inline-flex rounded-full  "
+                  className="h-[11px] mr-[6px] w-[11px] inline-flex rounded-full  "
                   key={i}
+                  asChild
                 >
                   {" "}
                 </Text>

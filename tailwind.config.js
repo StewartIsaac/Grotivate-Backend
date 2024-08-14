@@ -24,6 +24,7 @@ module.exports = {
         mgray2: '#F3F3F3',
         mgray3: '#B7B7B7',
         mgray4: '#909090',
+        mgray5: '#707070',
       },
       fontSize: {
         14: '14px',

@@ -8,6 +8,8 @@ import { SafeAreaView } from "react-native";
 import { ScrollView } from "react-native";
 import { Image } from "react-native";
 import openeye from "../assets/openeye.png";
+import { userInfo } from "../atoms/user";
+import { useRecoilState } from "recoil";
 
 const Schema = Yup.object().shape({
   password1: Yup.string()
@@ -38,6 +40,8 @@ export default function Page() {
   const router = useRouter();
   let [showPassword1, toggleShowPassword1] = useState(true);
   let [showPassword2, toggleShowPassword2] = useState(false);
+  let [status,setStatus] = useState('');
+  let  [user,setUser] = useRecoilState(userInfo);
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -45,7 +49,7 @@ export default function Page() {
 
   return (
     <SafeAreaView>
-      <ScrollView className="mt-12 grid grid-cols-1 bg-mwhite w-full   ">
+      <ScrollView className="mt-12 grid grid-cols-1 bg-mwhite w-full h-full   ">
         {/* forgot */}
         <View className="w-[323px] h-[90px] mx-auto mt-[141px]  ">
           <Text className="font-Inter700 text-15 text-center font-bold mb-[26px] ">
@@ -62,8 +66,37 @@ export default function Page() {
               password2: "",
             }}
             onSubmit={async (values) => {
-              console.log(values);
-              router.replace("/reset3");
+              let url = 'https://grotivate.onrender.com/api/users/reset-password-with-otp';
+              try {
+                let resp= await   fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    email: user.email,
+                    otp:  user.otp,
+                    newPassword: values.password1
+                  })
+                }).then(a=> {
+                  return a.json();
+                }).then(b=> {
+                  console.log(b);
+                  setStatus(b.message)
+                  if(String(b.message).includes('OTP')) {
+                    setUser({...user,isLoggedIn: true,})
+                    router.replace('/reset3');
+                  }
+                }).catch(err=> {
+                  console.log(err)
+                  setStatus(err.message)
+                })
+                
+              } catch (error) {
+                console.log(error)
+                setStatus(error.message)
+              }
             }}
             validationSchema={Schema}
           >
@@ -137,6 +170,8 @@ export default function Page() {
                     </Text>
                   </Pressable>
                 </View>
+                 {/* error status */}
+                 <Text className='text-red-600 text-center mt-1' > {status} </Text>
               </>
             )}
           </Formik>

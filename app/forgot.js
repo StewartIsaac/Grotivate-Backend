@@ -29,8 +29,8 @@ export default function Page() {
   
  
   return (
-    <SafeAreaView>
-      <ScrollView className="mt-12 grid grid-cols-1 bg-mwhite w-full   ">
+    <SafeAreaView className='' >
+      <ScrollView className="mt-12 grid grid-cols-1  w-full bg-white h-full   ">
        {/* forgot */}
        <View className='w-[323px] h-[90px] mx-auto mt-[67px]  ' >
         <Text className='font-Inter700 text-15 text-center font-bold mb-[26px] ' >Forgot Password</Text>
@@ -42,7 +42,7 @@ export default function Page() {
           onSubmit={async (values) =>{ 
             // console.log(values)
 
-          let url = 'https://grotivate.onrender.com/api/users/reset-password';
+          let url = 'https://grotivate.onrender.com/api/users/request-password-reset-otp';
             try {
               let resp= await   fetch(url, {
                 method: 'POST',
@@ -58,8 +58,8 @@ export default function Page() {
               }).then(b=> {
                 console.log(b);
                 setStatus(b.message)
-                if(String(b.message).includes('Please enter password')) {
-                  setUser({isLoggedIn:false, data: {email: values.email}})
+                if(String(b.message).includes('Password reset OTP sent to your email')) {
+                  setUser({isLoggedIn:false, email: values.email})
                   router.replace('/reset1');
                 }
               }).catch(err=> {

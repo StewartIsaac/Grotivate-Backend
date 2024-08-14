@@ -17,7 +17,10 @@ let [menu,setMenu] = useRecoilState(menuClick);
  function handleMenu(id) {
     let upd = list.map(each=> {
         if(each.id === id) {
+            each.state = true;
             setTab(each.component);
+        }else{
+            each.state = false;
         }
         return each;
     })
@@ -27,19 +30,16 @@ let [menu,setMenu] = useRecoilState(menuClick);
   return (
     <SafeAreaView>
       <ScrollView>
-        <View className='w-[90vw] mx-auto bg-mgray3 mt-[46px] py-[28px] pl-[5px] ' >
+        <View className={classNames('w-[90vw] mx-auto bg-mgray3 mt-[46px] py-[28px] pl-[5px] mb-[10vh] ',{})} >
             {
                 list.map(each=> (
-                    <Pressable onPress={()=> handleMenu(each.id)} className={classNames('flex flex-row items-center py-[7px] pl-[11px] justify-start border-1 w-[278px] h-[39px] mb-[23px] border border-black ',{})} key={each.id} >
-                        {each.icon}
-                        <Text className='ml-2' > {each.text} </Text>
+                    <Pressable onPress={()=> {handleMenu(each.id); each.id === 11 && setMenu(false)} } className={classNames('flex flex-row items-center py-[7px] pl-[11px] justify-start border-1 w-[278px] h-[39px] mb-[23px] border border-black ',{'border-mgreen3': each.state})} key={each.id} >
+                        {each.state?each.icong: each.icon}
+                        <Text className={classNames('ml-2 ',{'text-mgreen3': each.state})} > {each.text} </Text>
                     </Pressable>
                 ))
             }
-            <Pressable className={classNames('flex flex-row items-center py-[7px] pl-[11px] justify-start border-1 w-[278px] h-[39px] mb-[23px] border border-black ',{})} onPress={()=> setMenu(false) } >
-                <Image source={require('../assets/home.png')} alt="home" />
-                <Text className='ml-2' >Home</Text>
-            </Pressable>
+           
         </View>
       </ScrollView>
     </SafeAreaView>

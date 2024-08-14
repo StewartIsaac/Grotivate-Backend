@@ -37,7 +37,7 @@ export default function HomeHeader() {
           <TextInput
             onChangeText={setSearch}
             value={search}
-            className=" w-full ml-1 h-[25px] border-0 outline-0 "
+            className=" w-[48vw] ml-1 h-[25px] border-0 outline-0  overflow-x-hidden "
             placeholder="Search...."
             placeholderTextColor="#aaa"
           />

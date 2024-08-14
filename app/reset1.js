@@ -60,7 +60,7 @@ export default function Page() {
 
   return (
     <SafeAreaView>
-      <ScrollView className="mt-12 grid grid-cols-1 bg-mwhite w-full   ">
+      <ScrollView className="mt-12 grid grid-cols-1 bg-mwhite w-full h-full   ">
         {/* forgot */}
         <View className="w-[323px] h-[90px] mx-auto mt-[141px]  ">
           <Text className="font-Inter700 text-15 text-center font-bold mb-[26px] ">
@@ -91,8 +91,8 @@ export default function Page() {
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    email: user.data.email,
-                    otp:  `${values.digit1}${values.digit2}${values.digit3}${values.digit4}${values.digit5}${values.digit6}`
+                    email: user.email,
+                    otp:  `${values.digit1}${values.digit2}${values.digit3}${values.digit4}${values.digit5}${values.digit6}`,
                   })
                 }).then(a=> {
                   return a.json();
@@ -100,7 +100,13 @@ export default function Page() {
                   console.log(b);
                   setStatus(b.message)
                   if(String(b.message).includes('successfully')) {
-                    setUser({...user,isLoggedIn: true})
+                    setUser({...user,
+                      isLoggedIn: false,
+                      otp: `${values.digit1}${values.digit2}${values.digit3}${values.digit4}${values.digit5}${values.digit6}`,
+                      email: user.email
+                    }
+
+                    )
                     router.replace('/reset2');
                   }
                 }).catch(err=> {
